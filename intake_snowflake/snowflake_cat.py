@@ -60,14 +60,19 @@ class SnowflakeCatalog(Catalog):
         e._plugin = [SnowflakeSource]
         self._entries[path] = e
 
+    # Override _ipython_display_ from baseclass
+    _ipython_display_ = None
+
     def _repr_html_(self):
         (css_style,) = _load_static_files()
         uid = str(uuid.uuid4())
         info = self._source._init_args
+        db_prefix = self._database+'.'
         entries = []
         for e in self:
             euid = str(uuid.uuid4())
             erepr = repr(self[e])
+            e = e.replace(db_prefix, '')
             entry = f"""
             <li class="dr-entry-item">
               <div class="dr-entry-name"><span>{e}</span></div>
